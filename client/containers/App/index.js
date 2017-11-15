@@ -40,7 +40,7 @@ export default class App extends React.Component {
   }
 
   onRemoveAllCards() {
-    this.setState({ cards: []});
+    this.setState({ cards: [], sortAscending: false});
   }
 
   onSort() {
