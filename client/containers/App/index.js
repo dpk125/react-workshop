@@ -24,13 +24,11 @@ export default class App extends React.Component {
 
   onAddCard() {
     this.setState(prevState => {
-      const id = uniqid();
-
       const cards = prevState.cards.concat().sort((a, b) => a.value - b.value);
       const nextValue = 0 !== cards.length ? cards[cards.length - 1].value + 1 : 1;
 
       return {
-        cards: [...prevState.cards, {id: id, value: nextValue}]
+        cards: [...prevState.cards, {id: uniqid(), value: nextValue}]
       }
     });
   }
