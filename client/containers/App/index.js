@@ -1,4 +1,5 @@
 import React from 'react';
+import uniqid from 'uniqid';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
 
@@ -8,34 +9,54 @@ export default class App extends React.Component {
 
     this.state = {
       cards: [
-        {value: 5},
-        {value: 10},
-      ]
+        {id: uniqid(), value: 5},
+        {id: uniqid(), value: 4},
+      ],
+      sortAscending: true
     };
 
     this.onAddCard = this.onAddCard.bind(this);
     this.onRemoveCard = this.onRemoveCard.bind(this);
+    this.onSort = this.onSort.bind(this);
 
     this.onRemoveAllCards = this.onRemoveAllCards.bind(this);
   }
 
   onAddCard() {
-    let value = Math.floor(Math.random() * 52) + 1;
+    this.setState(prevState => {
+      const id = uniqid();
 
-    this.setState(prevState => ({
-      cards: [...prevState.cards, {value}]
-    }));
+      const cards = prevState.cards.concat().sort((a, b) => a.value - b.value);
+      const nextValue = 0 !== cards.length ? cards[cards.length - 1].value + 1 : 1;
+
+      return {
+        cards: [...prevState.cards, {id: id, value: nextValue}]
+      }
+    });
   }
 
-  onRemoveCard(i) {
-    debugger;
+  onRemoveCard(index) {
     this.setState(prevState => ({
-      cards: [...prevState.cards.slice(0, i - 1), ...prevState.cards.slice(i, -1)]
+      cards: prevState.cards.filter((card) => card.id !== index)
     }));
   }
 
   onRemoveAllCards() {
     this.setState({ cards: []});
+  }
+
+  onSort() {
+    this.setState(prevState => {
+      const cards = prevState
+        .cards
+        .concat()
+        .sort((a, b) => prevState.sortAscending ? a.value - b.value : b.value - a.value);
+
+      return {
+        cards,
+        sortAscending: !prevState.sortAscending
+      }
+    });
   }
 
   render() {
@@ -49,13 +70,16 @@ export default class App extends React.Component {
             </div>
 
             <div className="play-area-cards__items">
-              {this.state.cards.map((card, i) => <Card key={i} value={card.value} click={this.onRemoveCard.bind(this, i)} /> )}
+              {this.state.cards.map((card) => {
+                return <Card key={card.id} value={card.value} click={() => this.onRemoveCard(card.id)} />
+              })}
             </div>
           </div>
 
           <div className="play-area__actions">
             <Button title="Add" click={this.onAddCard} />
             <Button title="Remove" click={this.onRemoveAllCards} />
+            <Button title={this.state.sortAscending ? 'Sort' : 'Reverse'} click={this.onSort} />
           </div>
 
         </div>
