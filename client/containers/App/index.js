@@ -16,9 +16,7 @@ export default class App extends React.Component {
     };
 
     this.onAddCard = this.onAddCard.bind(this);
-    this.onRemoveCard = this.onRemoveCard.bind(this);
     this.onSort = this.onSort.bind(this);
-
     this.onRemoveAllCards = this.onRemoveAllCards.bind(this);
   }
 
@@ -69,7 +67,7 @@ export default class App extends React.Component {
 
             <div className="play-area-cards__items">
               {this.state.cards.map((card) => {
-                return <Card key={card.id} value={card.value} click={() => this.onRemoveCard(card.id)} />
+                return <Card key={card.id} value={card.value} click={this.onRemoveCard.bind(this, card.id)} />
               })}
             </div>
           </div>
