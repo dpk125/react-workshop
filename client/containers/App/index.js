@@ -1,6 +1,5 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
 import {addCard, removeCard, removeAllCards} from "../../reducers/deck";
 
 import Button from '../../components/Button';
@@ -37,11 +36,7 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => state;
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({addCard, removeCard, removeAllCards}, dispatch);
-};
-
-const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App);
-
-export default ConnectedApp;
+export default connect(
+  (state) => state,
+  {addCard, removeCard, removeAllCards}
+)(App);
