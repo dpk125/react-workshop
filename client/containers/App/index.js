@@ -1,60 +1,12 @@
 import React from 'react';
-import uniqid from 'uniqid';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {addCard, removeCard, removeAllCards} from "../../reducers/deck";
+
 import Button from '../../components/Button';
 import Card from '../../components/Card';
 
-export default class App extends React.Component {
-  constructor() {
-    super();
-
-    this.state = {
-      cards: [
-        {id: uniqid(), value: 5},
-        {id: uniqid(), value: 4},
-      ],
-      sortAscending: true
-    };
-
-    this.onAddCard = this.onAddCard.bind(this);
-    this.onSort = this.onSort.bind(this);
-    this.onRemoveAllCards = this.onRemoveAllCards.bind(this);
-  }
-
-  onAddCard() {
-    this.setState(prevState => {
-      const cards = prevState.cards.concat().sort((a, b) => a.value - b.value);
-      const nextValue = 0 !== cards.length ? cards[cards.length - 1].value + 1 : 1;
-
-      return {
-        cards: [...prevState.cards, {id: uniqid(), value: nextValue}]
-      }
-    });
-  }
-
-  onRemoveCard(index) {
-    this.setState(prevState => ({
-      cards: prevState.cards.filter((card) => card.id !== index)
-    }));
-  }
-
-  onRemoveAllCards() {
-    this.setState({ cards: [], sortAscending: false});
-  }
-
-  onSort() {
-    this.setState(prevState => {
-      const cards = prevState
-        .cards
-        .concat()
-        .sort((a, b) => prevState.sortAscending ? a.value - b.value : b.value - a.value);
-
-      return {
-        cards,
-        sortAscending: !prevState.sortAscending
-      }
-    });
-  }
-
+class App extends React.Component {
   render() {
     return (
       <div className="app-container">
@@ -66,16 +18,17 @@ export default class App extends React.Component {
             </div>
 
             <div className="play-area-cards__items">
-              {this.state.cards.map((card) => {
-                return <Card key={card.id} value={card.value} click={this.onRemoveCard.bind(this, card.id)} />
+              {this.props.cards.map((card) => {
+                return <Card key={card.id}
+                             value={card.value}
+                             click={this.props.removeCard.bind(this, card.id)} />
               })}
             </div>
           </div>
 
           <div className="play-area__actions">
-            <Button title="Add" click={this.onAddCard} />
-            <Button title="Remove" click={this.onRemoveAllCards} />
-            <Button title={this.state.sortAscending ? 'Sort' : 'Reverse'} click={this.onSort} />
+            <Button title="Add" click={this.props.addCard} />
+            <Button title="Remove" click={this.props.removeAllCards} />
           </div>
 
         </div>
@@ -83,3 +36,12 @@ export default class App extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state) => state;
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({addCard, removeCard, removeAllCards}, dispatch);
+};
+
+const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App);
+
+export default ConnectedApp;
