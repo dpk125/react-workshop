@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
-import { requestCard } from '../../core/modules/cards/cardsActions';
+import {removeAllCards, removeCard, requestCard} from '../../core/modules/cards/cardsActions';
 
 class App extends React.Component {
   render() {
@@ -18,7 +18,12 @@ class App extends React.Component {
             <div className="play-area-cards__items">
               {this.props.cards ?
                 this.props.cards.map(card => (
-                  <Card value={card.value} image={card.image}/>
+                  <Card
+                    key={card.id}
+                    value={card.value}
+                    image={card.image}
+                    click={this.props.onRemoveCard.bind(this, card)}
+                  />
                 ))
                 : null
               }
@@ -27,7 +32,7 @@ class App extends React.Component {
 
           <div className="play-area__actions">
             <Button title="Add card" click={() => this.props.onRequestCard()}/>
-            <Button title="Remove cards" click={this.onRemoveAllCards}/>
+            <Button title="Remove cards" click={this.props.onRemoveAllCards}/>
           </div>
 
         </div>
@@ -41,7 +46,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onRequestCard: (card) => dispatch(requestCard(card))
+  onRequestCard: (card) => dispatch(requestCard(card)),
+  onRemoveCard: (card) => dispatch(removeCard(card)),
+  onRemoveAllCards: () => dispatch(removeAllCards()),
 });
 
 export default connect(

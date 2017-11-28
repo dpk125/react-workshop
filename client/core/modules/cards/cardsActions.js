@@ -15,3 +15,18 @@ export const addCard = (card) => {
     }
   }
 };
+
+export const removeCard = (card) => {
+  return {
+    type: constants.cards.REMOVE,
+    payload: {
+      card
+    }
+  }
+};
+
+export const removeAllCards = () => {
+  return {
+    type: constants.cards.REMOVE_ALL
+  }
+};
